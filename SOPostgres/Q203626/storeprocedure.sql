@@ -54,7 +54,8 @@ BEGIN
     --END LOOP;
 
     --ELSE
-    IF(var_json_fields ISNULL)THEN
+    IF(var_json_fields IS NOT NULL)THEN
+    RAISE NOTICE 'var_json_fields=%', var_json_fields;
     INSERT INTO cat_vehicle(
         origin_adm,
         cve_vehicle,
@@ -100,10 +101,11 @@ BEGIN
                (var_json->>'date_last_man'):: date,
                 (var_json->>'odo_last_man'):: integer,
                (var_json->>'cve_delivery_route'):: integer);
+               get diagnostics var_n = row_count;
+               RAISE NOTICE 'Diagnostico ROW_COUNT=%', var_n;
+
              END IF;
            END LOOP;
-     get diagnostics var_n = row_count;
-     RAISE NOTICE 'Diagnostico ROW_COUNT=%', var_n;
             IF(var_n > 0) THEN
                 var_success:=true;
                 var_mensaje:='Registros agregados satisfactoriamente.';
